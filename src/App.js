@@ -3,13 +3,15 @@ import Blog from './components/Blog';
 import AddBlog from './components/AddBlog';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import Notification from './components/Notification';
 
 const App = () => {
-  const [errorMessage, setErrorMessage] = useState('');
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [succeeded, setSucceeded] = useState(true);
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -43,11 +45,14 @@ const App = () => {
       setPassword('');
     }
     catch (exception) {
-      console.log('wrong credentials');
-      setErrorMessage('wrong credentials');
+      console.log('wrong username or password');
+
+      setSucceeded(false);
+      setMessage('wrong username or password');
       setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000)
+        setMessage(null)
+        setSucceeded(true);
+      }, 5000);
     }
   }
 
@@ -55,6 +60,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={message} succeeded={succeeded} />
         <form onSubmit={handleLogin}>
           <div>
             username
