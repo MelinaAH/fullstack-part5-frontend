@@ -13,11 +13,13 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState(null);
   const [succeeded, setSucceeded] = useState(true);
+  const [sortedBlogs, setSortedBlogs] = useState([]);
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
+    setSortedBlogs(blogs.sort((a, b) => b.likes - a.likes));
   }, [blogs]);
 
   useEffect(() => {
@@ -158,7 +160,7 @@ const App = () => {
         </Togglable>
       </div>
       <br></br>
-      {blogs.map(blog =>
+      {sortedBlogs.map(blog =>
         <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
     </div>
