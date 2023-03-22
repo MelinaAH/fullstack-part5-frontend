@@ -13,9 +13,6 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState(null);
   const [succeeded, setSucceeded] = useState(true);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -60,25 +57,14 @@ const App = () => {
     }
   };
 
-  const handleAddBlog = async (e) => {
-    e.preventDefault();
-
+  const addBlog = async (blogObject) => {
     try {
-      const newObject = {
-        title: title,
-        author: author,
-        url: url
-      };
-      const newBlog = await blogService.create(newObject);
+      const newBlog = await blogService.create(blogObject);
       console.log(newBlog);
-      setBlogs(blogs.concat(newBlog));
       setMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`);
       setTimeout(() => {
         setMessage(null)
       }, 5000);
-      setTitle('');
-      setAuthor('');
-      setUrl('');
     }
     catch (exception) {
       console.log('something went wrong');
@@ -90,21 +76,6 @@ const App = () => {
       }, 5000);
     }
   };
-
-  /*
-  //
-  const handleTitleInput = (e) => {
-    setTitle(e.target.value);
-  };
-
-  const handleAuthorInput = (e) => {
-    setAuthor(e.target.value);
-  };
-
-  const handleUrlInput = (e) => {
-    setUrl(e.target.value);
-  };
-  */
 
   if (user === null) {
     return (
@@ -150,15 +121,7 @@ const App = () => {
       </div>
       <div>
         <Togglable buttonLabel='new blog'>
-          <AddBlog
-            handleAddBlog={handleAddBlog}
-            title={title}
-            author={author}
-            url={url}
-            handleTitleInput={({ target }) => setTitle(target.value)} // handleTitleInput={handleTitleInput} works as well
-            handleAuthorInput={({ target }) => setAuthor(target.value)}
-            handleUrlInput={({ target }) => setUrl(target.value)}
-          />
+          <AddBlog addBlog={addBlog} />
         </Togglable>
       </div>
       {blogs.map(blog =>
