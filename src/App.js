@@ -119,11 +119,13 @@ const App = () => {
           logout
         </button>
       </div>
+      <br></br>
       <div>
-        <Togglable buttonLabel='new blog'>
+        <Togglable buttonLabel='create a new blog'>
           <AddBlog addBlog={addBlog} />
         </Togglable>
       </div>
+      <br></br>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
