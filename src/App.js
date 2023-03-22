@@ -61,6 +61,7 @@ const App = () => {
     try {
       const newBlog = await blogService.create(blogObject);
       console.log(newBlog);
+      setBlogs(blogs.concat(newBlog));
       setMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`);
       setTimeout(() => {
         setMessage(null)
@@ -76,6 +77,37 @@ const App = () => {
       }, 5000);
     }
   };
+
+  const updateBlog = async (blogObject) => {
+    console.log('updated blogObject: ', blogObject);
+
+    if (blogs.some(({ title }) => title === blogObject.title)) {
+      const wantedBlog = blogs.find(blog => blog.title === blogObject.title);
+      const blogToUpdate = { ...wantedBlog, likes: blogObject.likes };
+      console.log('blogToUpdate id: ', blogToUpdate.id);
+
+      try {
+        const updatedBlog = await blogService.update(blogToUpdate.id, blogToUpdate);
+        console.log(updatedBlog);
+        const newBlogList = blogs.map(blog =>
+          blog.id !== wantedBlog.id ? blog : { ...blog, likes: blog.likes + 1 });
+        setBlogs(newBlogList);
+        setMessage(`a blog ${updatedBlog.title} by ${updatedBlog.author} has been updated`);
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000);
+      }
+      catch (exception) {
+        console.log('something went wrong');
+        setSucceeded(false);
+        setMessage('a new blog cannot be updated');
+        setTimeout(() => {
+          setMessage(null)
+          setSucceeded(true);
+        }, 5000);
+      }
+    }
+  }
 
   if (user === null) {
     return (
@@ -127,7 +159,7 @@ const App = () => {
       </div>
       <br></br>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
     </div>
   )
