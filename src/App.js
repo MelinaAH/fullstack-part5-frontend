@@ -4,6 +4,7 @@ import AddBlog from './components/AddBlog';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -12,6 +13,9 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState(null);
   const [succeeded, setSucceeded] = useState(true);
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -54,7 +58,53 @@ const App = () => {
         setSucceeded(true);
       }, 5000);
     }
-  }
+  };
+
+  const handleAddBlog = async (e) => {
+    e.preventDefault();
+
+    try {
+      const newObject = {
+        title: title,
+        author: author,
+        url: url
+      };
+      const newBlog = await blogService.create(newObject);
+      console.log(newBlog);
+      setBlogs(blogs.concat(newBlog));
+      setMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`);
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000);
+      setTitle('');
+      setAuthor('');
+      setUrl('');
+    }
+    catch (exception) {
+      console.log('something went wrong');
+      setSucceeded(false);
+      setMessage('a new blog cannot be added');
+      setTimeout(() => {
+        setMessage(null)
+        setSucceeded(true);
+      }, 5000);
+    }
+  };
+
+  /*
+  //
+  const handleTitleInput = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const handleAuthorInput = (e) => {
+    setAuthor(e.target.value);
+  };
+
+  const handleUrlInput = (e) => {
+    setUrl(e.target.value);
+  };
+  */
 
   if (user === null) {
     return (
@@ -88,16 +138,29 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={message} succeeded={succeeded} />
       <div>
         {user.name} logged in
         <button onClick={() => {
           window.localStorage.removeItem('loggedUser');
-          setUser(null)}}>
-            logout</button>
+          setUser(null)
+        }}>
+          logout
+        </button>
       </div>
-      <h2>create new</h2>
-      <AddBlog />
-      <br></br>
+      <div>
+        <Togglable buttonLabel='new blog'>
+          <AddBlog
+            handleAddBlog={handleAddBlog}
+            title={title}
+            author={author}
+            url={url}
+            handleTitleInput={({ target }) => setTitle(target.value)} // handleTitleInput={handleTitleInput} works as well
+            handleAuthorInput={({ target }) => setAuthor(target.value)}
+            handleUrlInput={({ target }) => setUrl(target.value)}
+          />
+        </Togglable>
+      </div>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
