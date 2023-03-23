@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
 import AddBlog from './components/AddBlog';
 import blogService from './services/blogs';
@@ -15,10 +15,12 @@ const App = () => {
   const [succeeded, setSucceeded] = useState(true);
   const [sortedBlogs, setSortedBlogs] = useState([]);
 
+  const blogFormRef = useRef();
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
-    )
+    );
     setSortedBlogs(blogs.sort((a, b) => b.likes - a.likes));
   }, [blogs]);
 
@@ -36,7 +38,7 @@ const App = () => {
     console.log('logging in with', username, password);
 
     try {
-      const user = await loginService.login({ username, password })
+      const user = await loginService.login({ username, password });
 
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
@@ -53,20 +55,22 @@ const App = () => {
       setSucceeded(false);
       setMessage('wrong username or password');
       setTimeout(() => {
-        setMessage(null)
+        setMessage(null);
         setSucceeded(true);
       }, 5000);
     }
   };
 
   const addBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility();
+
     try {
       const newBlog = await blogService.create(blogObject);
       console.log(newBlog);
       setBlogs(blogs.concat(newBlog));
       setMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`);
       setTimeout(() => {
-        setMessage(null)
+        setMessage(null);
       }, 5000);
     }
     catch (exception) {
@@ -74,7 +78,7 @@ const App = () => {
       setSucceeded(false);
       setMessage('a new blog cannot be added');
       setTimeout(() => {
-        setMessage(null)
+        setMessage(null);
         setSucceeded(true);
       }, 5000);
     }
@@ -96,7 +100,7 @@ const App = () => {
         setBlogs(newBlogList);
         setMessage(`a blog ${updatedBlog.title} by ${updatedBlog.author} has been updated`);
         setTimeout(() => {
-          setMessage(null)
+          setMessage(null);
         }, 5000);
       }
       catch (exception) {
@@ -104,12 +108,12 @@ const App = () => {
         setSucceeded(false);
         setMessage('a new blog cannot be updated');
         setTimeout(() => {
-          setMessage(null)
+          setMessage(null);
           setSucceeded(true);
         }, 5000);
       }
     }
-  }
+  };
 
   const deleteBlog = async (id) => {
     const blogToDelete = blogs.find(blog => blog.id === id);
@@ -127,7 +131,7 @@ const App = () => {
         setSucceeded(false);
         setMessage('the blog cannot be deleted');
         setTimeout(() => {
-          setMessage(null)
+          setMessage(null);
           setSucceeded(true);
         }, 5000);
       }
@@ -160,7 +164,7 @@ const App = () => {
           <button type='submit'>login</button>
         </form>
       </div>
-    )
+    );
   }
 
   return (
@@ -171,14 +175,14 @@ const App = () => {
         {user.name} logged in
         <button onClick={() => {
           window.localStorage.removeItem('loggedUser');
-          setUser(null)
+          setUser(null);
         }}>
           logout
         </button>
       </div>
       <br></br>
       <div>
-        <Togglable buttonLabel='create a new blog'>
+        <Togglable buttonLabel='create a new blog' ref={blogFormRef}>
           <AddBlog addBlog={addBlog} />
         </Togglable>
       </div>
@@ -187,7 +191,7 @@ const App = () => {
         <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} />
       )}
     </div>
-  )
+  );
 };
 
 export default App;

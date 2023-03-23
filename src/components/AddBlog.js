@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const AddBlog = ({ addBlog }) => {
   const [title, setTitle] = useState('');
@@ -8,14 +9,14 @@ const AddBlog = ({ addBlog }) => {
   const handleAddBlog = async (e) => {
     e.preventDefault();
     addBlog({
-        title: title,
-        author: author,
-        url: url
-      });
-      
-      setTitle('');
-      setAuthor('');
-      setUrl('');
+      title: title,
+      author: author,
+      url: url
+    });
+
+    setTitle('');
+    setAuthor('');
+    setUrl('');
   };
 
   return (
@@ -47,7 +48,11 @@ const AddBlog = ({ addBlog }) => {
         <button type='submit'>create</button>
       </form>
     </div>
-  )
+  );
+};
+
+AddBlog.propTypes = {
+  addBlog: PropTypes.func.isRequired
 };
 
 export default AddBlog;
