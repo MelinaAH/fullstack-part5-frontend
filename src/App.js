@@ -111,6 +111,29 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (id) => {
+    const blogToDelete = blogs.find(blog => blog.id === id);
+
+    if (window.confirm(`Remove blog ${blogToDelete.title} by ${blogToDelete.author}`)) {
+      try {
+        await blogService.deleteBlog(id);
+        setBlogs(blogs.filter(blog => blog.id !== id));
+        setMessage(`Deleted ${blogToDelete.title}`);
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
+      }
+      catch (exception) {
+        setSucceeded(false);
+        setMessage('the blog cannot be deleted');
+        setTimeout(() => {
+          setMessage(null)
+          setSucceeded(true);
+        }, 5000);
+      }
+    }
+  };
+
   if (user === null) {
     return (
       <div>
@@ -161,7 +184,7 @@ const App = () => {
       </div>
       <br></br>
       {sortedBlogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} />
       )}
     </div>
   )
