@@ -10,15 +10,15 @@ const Notification = ({ message, succeeded }) => {
       <div className='errorNote'>
         {message}
       </div>
-    )
+    );
   }
   else {
     return (
       <div className='note'>
         {message}
       </div>
-    )
+    );
   }
-}
+};
 
 export default Notification;
