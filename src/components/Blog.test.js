@@ -39,3 +39,27 @@ test('clicking the button renders additional content: url, likes, user', async (
   expect(component.container).toHaveTextContent(6);
   expect(component.container).toHaveTextContent('testuser');
 });
+
+test('if like button is pressed twice also updateBlog function is called twice', async () => {
+  const blog = {
+    title: 'Test title',
+    author: 'Test Author',
+    url: 'http://testurl.com',
+    likes: 6,
+    user: { name: 'testuser' },
+  };
+
+  const mockHandler = jest.fn();
+
+  render(<Blog blog={blog} updateBlog={mockHandler} />);
+
+  const user = userEvent.setup();
+  const viewButton = screen.getByText('view');
+  await user.click(viewButton);
+
+  const likeButton = screen.getByText('likes');
+  await user.click(likeButton);
+  await user.click(likeButton);
+
+  expect(mockHandler.mock.calls).toHaveLength(2);
+});
