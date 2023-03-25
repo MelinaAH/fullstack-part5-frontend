@@ -28,6 +28,7 @@ const AddBlog = ({ addBlog }) => {
           <input
             type="text"
             value={title}
+            id='title'
             onChange={(e) => setTitle(e.target.value)}
             placeholder='title'
           />
@@ -36,6 +37,7 @@ const AddBlog = ({ addBlog }) => {
           author: <input
             type="text"
             value={author}
+            id='author'
             onChange={(e) => setAuthor(e.target.value)}
             placeholder='author'
           />
@@ -44,11 +46,12 @@ const AddBlog = ({ addBlog }) => {
           url: <input
             type="text"
             value={url}
+            id='url'
             onChange={(e) => setUrl(e.target.value)}
             placeholder='url'
           />
         </div>
-        <button type='submit'>create</button>
+        <button type='submit' id='createButton'>create</button>
       </form>
     </div>
   );

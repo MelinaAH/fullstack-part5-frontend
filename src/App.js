@@ -113,7 +113,7 @@ const App = () => {
         }, 5000);
       }
     }
-  };
+  }
 
   const deleteBlog = async (id) => {
     const blogToDelete = blogs.find(blog => blog.id === id);
@@ -150,6 +150,7 @@ const App = () => {
               type="text"
               value={username}
               name="Username"
+              id='username'
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
@@ -158,13 +159,14 @@ const App = () => {
               type="password"
               value={password}
               name="Password"
+              id='password'
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type='submit'>login</button>
+          <button type='submit' id='loginButton'>login</button>
         </form>
       </div>
-    );
+    )
   }
 
   return (
@@ -191,7 +193,7 @@ const App = () => {
         <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} />
       )}
     </div>
-  );
+  )
 };
 
 export default App;
