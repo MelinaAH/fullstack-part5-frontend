@@ -20,13 +20,24 @@ describe('Blog app', function () {
     cy.contains('login').click();
   })
 
-  it('user can login', function () {
-    cy.contains('login').click();
-    cy.get('#username').type('user1');
-    cy.get('#password').type('secret');
-    cy.get('#loginButton').click();
+  describe('Login',function() {
+    it('succeeds with correct credentials', function() {
+      cy.contains('login').click();
+      cy.get('#username').type('user1');
+      cy.get('#password').type('secret');
+      cy.get('#loginButton').click();
+  
+      cy.contains('Testuser logged in')
+    })
 
-    cy.contains('Testuser logged in');
+    it('fails with wrong credentials', function() {
+      cy.contains('login').click();
+      cy.get('#username').type('user1');
+      cy.get('#password').type('wrongRassword');
+      cy.get('#loginButton').click();
+  
+      cy.contains('wrong username or password');
+    })
   });
 
   describe('when user is logged in', function () {
