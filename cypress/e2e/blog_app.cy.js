@@ -48,18 +48,17 @@ describe('Blog app', function () {
       cy.get('#loginButton').click();
     });
 
-    it('a new blog can be created', function() {
+    it('A blog can be created', function() {
       cy.contains('create a new blog').click();
       
       cy.get('#title').type('a blog title created by cypress');
       cy.get('#author').type('a blog author created by cypress');
-      //cy.get('#url').type('http://testurl.com');
+      cy.get('#url').type('someurl');
       cy.get('#createButton', {force: true}).click();
 
       cy.contains('create').click();
       cy.contains('a blog title created by cypress');
       cy.contains('a blog author created by cypress');
-      //cy.contains('http://testurl.com');
     });
   });
 });
