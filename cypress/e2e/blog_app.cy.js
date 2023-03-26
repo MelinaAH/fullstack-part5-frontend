@@ -101,10 +101,47 @@ describe('Blog app', function () {
         cy.get('#author').type('blog author');
         cy.get('#url').type('blog url');
         cy.get('#createButton').click();
-  
+
         cy.contains('blog title blog author').click();
         cy.get('#removeButton').should('not.exist');
       });
+    });
+
+    describe('blogs are sorted according to likes', () => {
+      it('blogs are sorted so that the one with the most likes is first', () => {
+        // the first blog
+        cy.contains('create a new blog').click();
+        cy.get('#title').type('Blog 1');
+        cy.get('#author').type('Author 1');
+        cy.get('#url').type('www.blog1.com');
+        cy.get('#createButton').click();
+  
+        // the second blog
+        cy.contains('create a new blog').click();
+        cy.get('#title').type('Blog 2');
+        cy.get('#author').type('Author 2');
+        cy.get('#url').type('www.blog2.com');
+        cy.get('#createButton').click();
+  
+        // the third blog
+        /*cy.contains('create a new blog').click();
+        cy.get('#title').type('Blog 3');
+        cy.get('#author').type('Author 3');
+        cy.get('#url').type('www.blog3.com');
+        cy.get('#createButton').click();*/
+
+        cy.get('.blog').eq(0).contains('button', 'view').click()
+        cy.get('.blog').eq(0).contains('button', 'likes').click()
+        cy.wait(1000) //wait for likes to update
+        cy.get('.blog').eq(0).should('contain', 'Blog 1')
+        cy.get('.blog').eq(1).should('contain', 'Blog 2')
+      
+        cy.get('.blog').eq(1).contains('button', 'view').click()
+        cy.get('.blog').eq(1).contains('button', 'likes').click()
+        cy.wait(1000) //wait for likes to update
+        cy.get('.blog').eq(0).should('contain', 'Blog 1')
+        cy.get('.blog').eq(1).should('contain', 'Blog 2')
+      })
     });
   });
 });
