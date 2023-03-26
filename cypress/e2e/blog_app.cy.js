@@ -1,14 +1,12 @@
 describe('Blog app', function () {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    //cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`);
     const user = {
       name: 'Testuser',
       username: 'user1',
       password: 'secret'
     };
     cy.request('POST', 'http://localhost:3003/api/users/', user)
-    //cy.request('POST', `${Cypress.env('BACKEND')}/users`, user);
     cy.visit('http://localhost:3000');
   });
 
@@ -78,7 +76,7 @@ describe('Blog app', function () {
       cy.contains('likes: 1');
     });
 
-    it.only('The person who has added the blog can also remove it', function () {
+    it('The person who has added the blog can also remove it', function () {
       cy.contains('create a new blog').click();
 
       cy.get('#title').type('Testtitle');
@@ -94,6 +92,19 @@ describe('Blog app', function () {
 
       cy.contains('remove blog').click();
       cy.contains('Testtitle').should('not.exist');
+    });
+
+    describe('when user is logged in as an other user', function () {
+      it('only the creator of a blog can remove it', function () {
+        cy.contains('create a new blog').click();
+        cy.get('#title').type('blog title');
+        cy.get('#author').type('blog author');
+        cy.get('#url').type('blog url');
+        cy.get('#createButton').click();
+  
+        cy.contains('blog title blog author').click();
+        cy.get('#removeButton').should('not.exist');
+      });
     });
   });
 });
